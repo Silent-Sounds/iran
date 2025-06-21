@@ -14,8 +14,26 @@ import aidQueueImage from './assets/aid_queue_women_children.jpg';
 import womanInRubbleImage from './assets/woman_in_rubble.jpg';
 import heroImage from './assets/hero_image.jpg'; // Import the new hero image
 
+// Pages
+import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
+import StoriesPage from './pages/StoriesPage';
+import HowToHelpPage from './pages/HowToHelpPage';
+import NewsPage from './pages/NewsPage';
+import ContactPage from './pages/ContactPage';
+import DonatePage from './pages/DonatePage';
+import SinglePostPage from './pages/SinglePostPage';
+import SingleStoryPage from './pages/SingleStoryPage';
+import LoginPage from './pages/LoginPage';
+import RegisterPage from './pages/RegisterPage'; // Import RegisterPage
+import ProfilePage from './pages/ProfilePage';   // Import ProfilePage
+import ProtectedRoute from './components/ProtectedRoute'; // Import ProtectedRoute
+
+import { AuthProvider, AuthContext } from './context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+
 // Language Context
-const LanguageContext = React.createContext();
+export const LanguageContext = React.createContext();
 
 // Language Provider
 const LanguageProvider = ({ children }) => {
@@ -135,7 +153,38 @@ const LanguageProvider = ({ children }) => {
       nameLabel: 'Name',
       emailLabel: 'Email',
       submitDonationButton: 'Donate for Civilian Support',
-      contentComingSoon: 'Content coming soon...' // Added for placeholder pages
+      contentComingSoon: 'Content coming soon...',
+
+      // Auth related
+      loginPageTitle: 'Login',
+      loginPageMetaDescription: 'Login to your Voices of Resilience account.',
+      usernameLabel: 'Username or Email',
+      passwordLabel: 'Password',
+      loginButton: 'Login',
+      logoutButton: 'Logout',
+      loadingLabel: 'Loading...',
+      dontHaveAccountPrompt: "Don't have an account?",
+      registerLink: "Register here",
+      registerPageTitle: "Register",
+      registerPageMetaDescription: "Create a new Voices of Resilience account.",
+      registerPageSubtitle: "Join our community to support the cause.",
+      emailLabel: "Email",
+      registerButton: "Register",
+      registrationSuccessMessage: "Registration successful! Please login.",
+      alreadyHaveAccountPrompt: "Already have an account?",
+      loginLink: "Login here",
+      profilePageTitle: "My Profile",
+      profilePageMetaDescription: "View your user profile.",
+      profilePageSubtitle: "Here's your information.",
+      displayNameLabel: "Display Name",
+      profileNotAvailable: "User profile information is not available at this moment.",
+      loadingAuthStatus: "Checking authentication status...",
+
+      // Donate Page specific form fields
+      firstNameLabel: "First Name",
+      lastNameLabel: "Last Name",
+      submittingDonation: "Submitting Donation...",
+      testimonialsSectionTitle: "Testimonials" // Example title for a new section on HomePage
     },
     fa: {
       // Navigation (Persian/Farsi)
@@ -201,7 +250,38 @@ const LanguageProvider = ({ children }) => {
       nameLabel: 'نام',
       emailLabel: 'ایمیل',
       submitDonationButton: 'کمک مالی کردن',
-      contentComingSoon: 'محتوا به زودی...'
+      contentComingSoon: 'محتوا به زودی...',
+
+      // Auth related (Farsi)
+      loginPageTitle: 'ورود',
+      loginPageMetaDescription: 'به حساب کاربری خود در صدای مقاومت وارد شوید.',
+      usernameLabel: 'نام کاربری یا ایمیل',
+      passwordLabel: 'رمز عبور',
+      loginButton: 'ورود',
+      logoutButton: 'خروج',
+      loadingLabel: 'در حال بارگذاری...',
+      dontHaveAccountPrompt: "حساب کاربری ندارید؟",
+      registerLink: "اینجا ثبت نام کنید",
+      registerPageTitle: "ثبت نام",
+      registerPageMetaDescription: "یک حساب کاربری جدید در صدای مقاومت ایجاد کنید.",
+      registerPageSubtitle: "به جامعه ما بپیوندید تا از این هدف حمایت کنید.",
+      // emailLabel: "ایمیل", // Already exists
+      registerButton: "ثبت نام",
+      registrationSuccessMessage: "ثبت نام موفقیت آمیز بود! لطفا وارد شوید.",
+      alreadyHaveAccountPrompt: "از قبل حساب کاربری دارید؟",
+      loginLink: "اینجا وارد شوید",
+      profilePageTitle: "پروفایل من",
+      profilePageMetaDescription: "مشاهده پروفایل کاربری شما.",
+      profilePageSubtitle: "اطلاعات شما در اینجا آمده است.",
+      // displayNameLabel: "نام نمایشی",
+      profileNotAvailable: "اطلاعات پروفایل کاربری در حال حاضر در دسترس نیست.",
+      loadingAuthStatus: "در حال بررسی وضعیت احراز هویت...",
+
+      // Donate Page specific form fields (Farsi)
+      firstNameLabel: "نام",
+      lastNameLabel: "نام خانوادگی",
+      submittingDonation: "در حال ارسال کمک مالی...",
+      testimonialsSectionTitle: "نظرات"
     },
     ar: {
       // Navigation (Arabic)
@@ -267,7 +347,38 @@ const LanguageProvider = ({ children }) => {
       nameLabel: 'الاسم',
       emailLabel: 'البريد الإلكتروني',
       submitDonationButton: 'تبرع',
-      contentComingSoon: 'المحتوى قريبا...'
+      contentComingSoon: 'المحتوى قريبا...',
+
+      // Auth related (Arabic)
+      loginPageTitle: 'تسجيل الدخول',
+      loginPageMetaDescription: 'سجل الدخول إلى حسابك في أصوات الصمود.',
+      usernameLabel: 'اسم المستخدم أو البريد الإلكتروني',
+      passwordLabel: 'كلمة المرور',
+      loginButton: 'تسجيل الدخول',
+      logoutButton: 'تسجيل الخروج',
+      loadingLabel: 'جار التحميل...',
+      dontHaveAccountPrompt: "ليس لديك حساب؟",
+      registerLink: "سجل هنا",
+      registerPageTitle: "تسجيل",
+      registerPageMetaDescription: "أنشئ حسابًا جديدًا في أصوات الصمود.",
+      registerPageSubtitle: "انضم إلى مجتمعنا لدعم القضية.",
+      // emailLabel: "البريد الإلكتروني", // Already exists
+      registerButton: "تسجيل",
+      registrationSuccessMessage: "تم التسجيل بنجاح! يرجى تسجيل الدخول.",
+      alreadyHaveAccountPrompt: "هل لديك حساب بالفعل؟",
+      loginLink: "سجل الدخول هنا",
+      profilePageTitle: "ملفي الشخصي",
+      profilePageMetaDescription: "عرض ملف تعريف المستخدم الخاص بك.",
+      profilePageSubtitle: "هذه هي معلوماتك.",
+      // displayNameLabel: "الاسم المعروض",
+      profileNotAvailable: "معلومات ملف تعريف المستخدم غير متوفرة في الوقت الحالي.",
+      loadingAuthStatus: "جاري التحقق من حالة المصادقة...",
+
+      // Donate Page specific form fields (Arabic)
+      firstNameLabel: "الاسم الأول",
+      lastNameLabel: "اسم العائلة",
+      submittingDonation: "جاري إرسال التبرع...",
+      testimonialsSectionTitle: "الشهادات"
     }
   };
   
@@ -414,6 +525,14 @@ const LanguageSelector = () => {
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { t } = React.useContext(LanguageContext);
+  const { isAuthenticated, logout: authLogoutAction, currentUser } = React.useContext(AuthContext); // Renamed logout to avoid conflict
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    authLogoutAction();
+    setIsMenuOpen(false); // Close menu on logout
+    navigate('/');
+  };
 
   return (
     <nav className="bg-white shadow-lg sticky top-0 z-50">
@@ -427,7 +546,7 @@ const Navigation = () => {
           </div>
           
           {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-8">
+          <div className="hidden md:flex items-center space-x-6"> {/* Adjusted space */}
             <Link to="/" className="text-gray-700 hover:text-red-600 transition-colors">{t('home')}</Link>
             <Link to="/about" className="text-gray-700 hover:text-red-600 transition-colors">{t('about')}</Link>
             <Link to="/stories" className="text-gray-700 hover:text-red-600 transition-colors">{t('stories')}</Link>
@@ -435,6 +554,24 @@ const Navigation = () => {
             <Link to="/news" className="text-gray-700 hover:text-red-600 transition-colors">{t('news')}</Link>
             <Link to="/contact" className="text-gray-700 hover:text-red-600 transition-colors">{t('contact')}</Link>
             <LanguageSelector />
+            {isAuthenticated ? (
+              <>
+                {currentUser?.displayName && (
+                  <Link to="/profile" className="text-gray-700 hover:text-red-600 transition-colors px-3 py-2 rounded-md text-sm font-medium">
+                    {currentUser.displayName}
+                  </Link>
+                )}
+                <Button variant="outline" onClick={handleLogout} className="hover:border-red-600 hover:text-red-600">
+                  {t('logoutButton')}
+                </Button>
+              </>
+            ) : (
+              <Link to="/login">
+                <Button variant="outline" className="hover:border-red-600 hover:text-red-600">
+                  {t('loginButton')}
+                </Button>
+              </Link>
+            )}
             <Link to="/donate">
               <Button className="bg-red-600 hover:bg-red-700">{t('donateNow')}</Button>
             </Link>
@@ -455,16 +592,34 @@ const Navigation = () => {
         {isMenuOpen && (
           <div className="md:hidden">
             <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t">
-              <Link to="/" className="block px-3 py-2 text-gray-700 hover:text-red-600">{t('home')}</Link>
-              <Link to="/about" className="block px-3 py-2 text-gray-700 hover:text-red-600">{t('about')}</Link>
-              <Link to="/stories" className="block px-3 py-2 text-gray-700 hover:text-red-600">{t('stories')}</Link>
-              <Link to="/help" className="block px-3 py-2 text-gray-700 hover:text-red-600">{t('howToHelp')}</Link>
-              <Link to="/news" className="block px-3 py-2 text-gray-700 hover:text-red-600">{t('news')}</Link>
-              <Link to="/contact" className="block px-3 py-2 text-gray-700 hover:text-red-600">{t('contact')}</Link>
+              <Link to="/" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-gray-700 hover:text-red-600">{t('home')}</Link>
+              <Link to="/about" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-gray-700 hover:text-red-600">{t('about')}</Link>
+              <Link to="/stories" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-gray-700 hover:text-red-600">{t('stories')}</Link>
+              <Link to="/help" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-gray-700 hover:text-red-600">{t('howToHelp')}</Link>
+              <Link to="/news" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-gray-700 hover:text-red-600">{t('news')}</Link>
+              <Link to="/contact" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-gray-700 hover:text-red-600">{t('contact')}</Link>
               <div className="px-3 py-2">
                 <LanguageSelector />
               </div>
-              <Link to="/donate" className="w-full">
+              {isAuthenticated ? (
+                <>
+                  {currentUser?.displayName && (
+                    <Link to="/profile" onClick={() => setIsMenuOpen(false)} className="block px-3 py-2 text-gray-700 hover:text-red-600">
+                      {currentUser.displayName}
+                    </Link>
+                  )}
+                  <Button variant="outline" onClick={handleLogout} className="w-full mt-2 hover:border-red-600 hover:text-red-600">
+                    {t('logoutButton')}
+                  </Button>
+                </>
+              ) : (
+                <Link to="/login" onClick={() => setIsMenuOpen(false)} className="w-full">
+                  <Button variant="outline" className="w-full mt-2 hover:border-red-600 hover:text-red-600">
+                    {t('loginButton')}
+                  </Button>
+                </Link>
+              )}
+              <Link to="/donate" onClick={() => setIsMenuOpen(false)} className="w-full">
                 <Button className="w-full mt-2 bg-red-600 hover:bg-red-700">{t('donateNow')}</Button>
               </Link>
             </div>
@@ -472,259 +627,6 @@ const Navigation = () => {
         )}
       </div>
     </nav>
-  );
-};
-
-// Hero Section Component
-const HeroSection = () => {
-  const { t } = React.useContext(LanguageContext);
-  
-  return (
-    <section 
-      className="relative bg-cover bg-center text-white py-24"
-      style={{ backgroundImage: `url(${heroImage})` }}
-      aria-label={t('heroImageAltText')} // Good for accessibility on background images
-    >
-      <img src={heroImage} alt={t('heroImageAltText')} className="sr-only" /> {/* For screen readers */}
-      <div className="absolute inset-0 bg-black opacity-50"></div>
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            {t('heroTitle')}
-          </h1>
-          <p className="text-xl md:text-2xl mb-8 max-w-3xl mx-auto">
-            {t('heroSubtitle')}
-          </p>
-          <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Link to="/donate">
-              <Button size="lg" className="bg-red-600 hover:bg-red-700">
-                <Heart className="mr-2 h-5 w-5" />
-                {t('donateNow')}
-              </Button>
-            </Link>
-            <Link to="/stories">
-              <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-gray-900">
-                <Users className="mr-2 h-5 w-5" />
-                {t('readStories')}
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-// Statistics Section
-const StatisticsSection = () => {
-  const { t } = React.useContext(LanguageContext);
-  
-  const stats = [
-    { number: "224+", label: t('livesLost'), description: t('civiliansKilled') },
-    { number: "1,800+", label: t('injured'), description: t('peopleRequiringMedical') },
-    { number: "74", label: t('womenChildren'), description: t('amongThoseWhoLost') },
-    { number: "Thousands", label: t('displaced'), description: t('familiesForced') }
-  ];
-
-  return (
-    <section className="py-16 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('humanCostTitle')}</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {t('humanCostSubtitle')}
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {stats.map((stat, index) => (
-            <Card key={index} className="text-center">
-              <CardContent className="pt-6">
-                <div className="text-3xl font-bold text-red-600 mb-2">{stat.number}</div>
-                <div className="text-lg font-semibold text-gray-900 mb-1">{stat.label}</div>
-                <div className="text-sm text-gray-600">{stat.description}</div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-// Featured Stories Section
-const FeaturedStoriesSection = () => {
-  const { t } = React.useContext(LanguageContext);
-  
-  const stories = [
-    {
-      title: t('anahitaTitle'),
-      location: t('anahitaLocation'),
-      excerpt: t('anahitaExcerpt'),
-      image: destroyedHomesImage,
-      category: "Personal Story"
-    },
-    {
-      title: t('khatibTitle'),
-      location: t('khatibLocation'),
-      excerpt: t('khatibExcerpt'),
-      image: womanInRubbleImage,
-      category: "Family Impact"
-    },
-    {
-      title: t('nowhereTitle'),
-      location: t('nowhereLocation'),
-      excerpt: t('nowhereExcerpt'),
-      image: aidQueueImage,
-      category: "Community Voices"
-    }
-  ];
-
-  return (
-    <section className="py-16 bg-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('storiesTitle')}</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {t('storiesSubtitle')}
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {stories.map((story, index) => (
-            <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
-              <div className="aspect-video relative overflow-hidden">
-                <img 
-                  src={story.image} 
-                  alt={
-                    story.image === destroyedHomesImage ? t('destroyedHomesImageAltText') :
-                    story.image === womanInRubbleImage ? t('womanInRubbleImageAltText') :
-                    story.image === aidQueueImage ? t('aidQueueImageAltText') :
-                    story.title // Fallback to title if image not matched
-                  }
-                  className="w-full h-full object-cover"
-                />
-                <Badge className="absolute top-4 left-4 bg-red-600">{story.category}</Badge>
-              </div>
-              <CardHeader>
-                <CardTitle className="text-xl">{story.title}</CardTitle>
-                <CardDescription className="text-sm text-gray-500">{story.location}</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <p className="text-gray-600 mb-4">{story.excerpt}</p>
-                <Link to="/stories" className="w-full">
-                  <Button variant="outline" className="w-full">
-                    {t('readFullStory')} <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-        <div className="text-center mt-12">
-          <Link to="/stories">
-            <Button size="lg" className="bg-gray-900 hover:bg-gray-800">
-              {t('viewAllStories')}
-            </Button>
-          </Link>
-        </div>
-      </div>
-    </section>
-  );
-};
-
-// How to Help Section
-const HowToHelpSection = () => {
-  const { t } = React.useContext(LanguageContext);
-  
-  const helpOptions = [
-    {
-      icon: DollarSign,
-      title: t('financialDonations'),
-      description: "Secure donations that directly support humanitarian aid, medical supplies, and emergency relief.",
-      action: t('donateNow')
-    },
-    {
-      icon: Handshake,
-      title: t('partnerships'),
-      description: "Organizations and NGOs can partner with us to amplify impact and coordinate relief efforts.",
-      action: "Partner With Us"
-    },
-    {
-      icon: Megaphone,
-      title: t('advocacyMedia'),
-      description: "Help amplify these voices through media coverage, social sharing, and advocacy efforts.",
-      action: "Get Resources"
-    },
-    {
-      icon: UserPlus,
-      title: t('volunteer'),
-      description: "Contribute your skills in translation, outreach, content creation, or administrative support.",
-      action: "Join Us"
-    }
-  ];
-
-  return (
-    <section className="py-16 bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">{t('howToHelpTitle')}</h2>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-            {t('howToHelpSubtitle')}
-          </p>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {helpOptions.map((option, index) => (
-            <Card key={index} className="text-center hover:shadow-lg transition-shadow">
-              <CardContent className="pt-6">
-                <option.icon className="h-12 w-12 text-red-600 mx-auto mb-4" />
-                <h3 className="text-xl font-semibold text-gray-900 mb-3">{option.title}</h3>
-                <p className="text-gray-600 mb-6">{option.description}</p>
-                {option.title === t('financialDonations') ? (
-                  <Link to="/donate" className="w-full">
-                    <Button className="w-full bg-red-600 hover:bg-red-700">
-                      {option.action}
-                    </Button>
-                  </Link>
-                ) : (
-                  <Button className="w-full bg-red-600 hover:bg-red-700">
-                    {option.action}
-                  </Button>
-                )}
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-};
-
-// Call to Action Section
-const CallToActionSection = () => {
-  const { t } = React.useContext(LanguageContext);
-  
-  return (
-    <section className="py-16 bg-red-600 text-white">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        <h2 className="text-3xl font-bold mb-4">{t('ctaTitle')}</h2>
-        <p className="text-xl mb-8">
-          {t('ctaSubtitle')}
-        </p>
-        <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link to="/about">
-            <Button size="lg" variant="outline" className="border-white text-white hover:bg-white hover:text-red-600">
-              <Globe className="mr-2 h-5 w-5" />
-              {t('learnMore')}
-            </Button>
-          </Link>
-          <Link to="/donate">
-            <Button size="lg" className="bg-white text-red-600 hover:bg-gray-100">
-              <Heart className="mr-2 h-5 w-5" />
-              {t('supportNow')}
-            </Button>
-          </Link>
-        </div>
-      </div>
-    </section>
   );
 };
 
@@ -787,174 +689,36 @@ const Footer = () => {
   );
 };
 
-// Home Page Component
-const HomePage = () => {
-  const { t } = React.useContext(LanguageContext);
-  useEffect(() => {
-    document.title = t('homePageTitle');
-  }, [t]);
-
-  return (
-    <div>
-      <Helmet>
-        <meta name="description" content={t('homePageMetaDescription')} />
-      </Helmet>
-      <HeroSection />
-      <StatisticsSection />
-      <FeaturedStoriesSection />
-      <HowToHelpSection />
-      <CallToActionSection />
-    </div>
-  );
-};
-
-// About Page Component
-const AboutPage = () => {
-  const { t } = React.useContext(LanguageContext);
-
-  useEffect(() => {
-    document.title = t('aboutPageTitle');
-  }, [t]);
-  
-  return (
-    <div className="py-16">
-      <Helmet>
-        <meta name="description" content={t('aboutPageMetaDescription')} />
-      </Helmet>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">{t('aboutTitle')}</h1>
-        <div className="prose prose-lg max-w-none">
-          <p className="text-xl text-gray-600 mb-6">
-            {t('aboutIntro')}
-          </p>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('ourMission')}</h2>
-          <p className="text-gray-600 mb-6">
-            {t('ourMissionParagraph')}
-          </p>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('ourValues')}</h2>
-          <ul className="list-disc pl-6 text-gray-600 mb-6">
-            <li>{t('ourValuesListItem1')}</li>
-            <li>{t('ourValuesListItem2')}</li>
-            <li>{t('ourValuesListItem3')}</li>
-            <li>{t('ourValuesListItem4')}</li>
-            <li>{t('ourValuesListItem5')}</li>
-          </ul>
-          <h2 className="text-2xl font-bold text-gray-900 mb-4">{t('transparency')}</h2>
-          <p className="text-gray-600">
-            {t('transparencyParagraph')}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
-
-// Stories Page Component
-const StoriesPage = () => {
-  const { t } = React.useContext(LanguageContext);
-
-  useEffect(() => {
-    document.title = t('storiesPageTitle');
-  }, [t]);
-
-  return (
-    <div className="py-16 text-center">
-      <Helmet>
-        <meta name="description" content={t('storiesPageMetaDescription')} />
-      </Helmet>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">{t('stories')}</h1>
-        <p className="text-xl text-gray-600">{t('contentComingSoon')}</p>
-      </div>
-    </div>
-  );
-};
-
-// How to Help Page Component
-const HowToHelpPage = () => {
-  const { t } = React.useContext(LanguageContext);
-
-  useEffect(() => {
-    document.title = t('howToHelpPageTitle');
-  }, [t]);
-
-  return (
-    <div className="py-16 text-center">
-      <Helmet>
-        <meta name="description" content={t('howToHelpPageMetaDescription')} />
-      </Helmet>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">{t('howToHelp')}</h1>
-        <p className="text-xl text-gray-600">{t('contentComingSoon')}</p>
-      </div>
-    </div>
-  );
-};
-
-// News Page Component
-const NewsPage = () => {
-  const { t } = React.useContext(LanguageContext);
-
-  useEffect(() => {
-    document.title = t('newsPageTitle');
-  }, [t]);
-
-  return (
-    <div className="py-16 text-center">
-      <Helmet>
-        <meta name="description" content={t('newsPageMetaDescription')} />
-      </Helmet>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">{t('news')}</h1>
-        <p className="text-xl text-gray-600">{t('contentComingSoon')}</p>
-      </div>
-    </div>
-  );
-};
-
-// Contact Page Component
-const ContactPage = () => {
-  const { t } = React.useContext(LanguageContext);
-
-  useEffect(() => {
-    document.title = t('contactPageTitle');
-  }, [t]);
-
-  return (
-    <div className="py-16 text-center">
-      <Helmet>
-        <meta name="description" content={t('contactPageMetaDescription')} />
-      </Helmet>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <h1 className="text-4xl font-bold text-gray-900 mb-8">{t('contact')}</h1>
-        <p className="text-xl text-gray-600">{t('contentComingSoon')}</p>
-      </div>
-    </div>
-  );
-};
 
 // Main App Component
 const App = () => {
   return (
     <HelmetProvider>
       <LanguageProvider>
-        <Router>
-          <div className="min-h-screen bg-white">
-            <Navigation />
-            <main>
-              <Routes>
-                <Route path="/" element={<HomePage />} />
-                <Route path="/about" element={<AboutPage />} />
-                <Route path="/stories" element={<StoriesPage />} />
-                <Route path="/help" element={<HowToHelpPage />} />
-                <Route path="/news" element={<NewsPage />} />
-                <Route path="/contact" element={<ContactPage />} />
-                <Route path="/donate" element={<DonatePage />} />
-              </Routes>
-            </main>
-            <Footer />
-          </div>
-        </Router>
+        <AuthProvider>
+          <Router>
+            <div className="min-h-screen bg-white">
+              <Navigation />
+              <main>
+                <Routes>
+                  <Route path="/" element={<HomePage />} />
+                  <Route path="/about" element={<AboutPage />} />
+                  <Route path="/stories" element={<StoriesPage />} />
+                  <Route path="/help" element={<HowToHelpPage />} />
+                  <Route path="/news" element={<NewsPage />} />
+                  <Route path="/news/:slug" element={<SinglePostPage />} />
+                  <Route path="/contact" element={<ContactPage />} />
+                  <Route path="/donate" element={<DonatePage />} />
+                  <Route path="/stories/:slug" element={<SingleStoryPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/profile" element={<ProtectedRoute><ProfilePage /></ProtectedRoute>} />
+                </Routes>
+              </main>
+              <Footer />
+            </div>
+          </Router>
+        </AuthProvider>
       </LanguageProvider>
     </HelmetProvider>
   );
